@@ -59,7 +59,7 @@
   window.ADQIcon = icon;
 
   function logo(root) {
-    return '<img src="' + root + 'assets/img/dq-automation-logo.png" alt="DQ Automation — Giải pháp tự động hóa, nâng tầm sản xuất" class="h-[50px] w-[203px] shrink-0 object-contain sm:h-[58px] sm:w-[236px]">';
+    return '<img src="' + root + 'assets/img/DQAutomation_logo.png" alt="DQ Automation — Giải pháp tự động hóa, nâng tầm sản xuất" class="h-[50px] w-[203px] shrink-0 object-contain sm:h-[58px] sm:w-[236px]">';
   }
 
   function navLinks(active, mobile) {
