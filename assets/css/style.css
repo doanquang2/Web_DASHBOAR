@@ -1,0 +1,278 @@
+/* ===== Cơ bản ===== */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #fff;
+  color: #0a1a33;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hiện viền focus rõ khi dùng bàn phím */
+:focus-visible {
+  outline: 3px solid #1f5fd6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Liên kết "Bỏ qua điều hướng" cho người dùng bàn phím / trình đọc màn hình */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0.75rem;
+  z-index: 100;
+  background: #0b2a5b;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0.75rem;
+}
+
+/* ===== Sơ đồ ladder tương tác ở hero ===== */
+.ladder-rail {
+  stroke: #0b2a5b;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.wire {
+  fill: none;
+  stroke: #9fb3cf;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke 0.15s ease;
+}
+.wire.on {
+  stroke: #f5a524;
+}
+
+.contact line {
+  stroke: #9fb3cf;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke 0.15s ease;
+}
+.contact.on line {
+  stroke: #f5a524;
+}
+
+.coil {
+  fill: #fff;
+  stroke: #9fb3cf;
+  stroke-width: 4;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+.coil.on {
+  fill: #f5a524;
+  stroke: #f5a524;
+}
+
+.lbl {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  fill: #0b2a5b;
+}
+.lbl-coil {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  fill: #0a1a33;
+}
+
+/* Nút giữ cảm giác "nhấn" thật */
+.ladder-btn:active {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .wire,
+  .contact line,
+  .coil {
+    transition: none;
+  }
+}
+
+
+/* ===== Nội dung bài viết (trang Kiến thức) ===== */
+.article-body {
+  max-width: 44rem;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: #1e293b;
+}
+.article-body h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.375rem;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #0b2a5b;
+}
+.article-body p {
+  margin-top: 1rem;
+}
+.article-body ul,
+.article-body ol {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+}
+.article-body ul {
+  list-style: disc;
+}
+.article-body ol {
+  list-style: decimal;
+}
+.article-body li {
+  margin-top: 0.5rem;
+  padding-left: 0.25rem;
+}
+.article-body li::marker {
+  color: #1f5fd6;
+}
+.article-body strong {
+  font-weight: 600;
+  color: #0a1a33;
+}
+.article-body em {
+  font-style: italic;
+}
+
+/* Mã nguồn: dòng trong câu và khối nhiều dòng */
+.article-body code {
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: #eaf1fd;
+  color: #0b2a5b;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+}
+.article-body pre {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: #071b3f;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  -webkit-overflow-scrolling: touch;
+}
+.article-body pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* Bảng */
+.article-body table {
+  display: block;
+  max-width: 100%;
+  margin-top: 1.25rem;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.article-body th,
+.article-body td {
+  padding: 0.65rem 1rem;
+  border: 1px solid #d7e0ee;
+  text-align: left;
+}
+.article-body th {
+  background: #f5f8fc;
+  font-weight: 600;
+  color: #0b2a5b;
+}
+
+/* Khung lưu ý */
+.article-body .callout {
+  margin-top: 1.75rem;
+  padding: 0.25rem 1.25rem 1rem;
+  border-left: 4px solid #1f5fd6;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: #eaf1fd;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.article-body .callout-warn {
+  border-left-color: #f5a524;
+  background: #fff7e6;
+}
+
+
+/* ===== Tối ưu cho điện thoại ===== */
+html {
+  scroll-padding-top: 5rem; /* chừa chỗ cho thanh Header dính khi nhảy tới #neo */
+}
+
+/* Chặn trang bị kéo ngang do một phần tử nào đó tràn khung (clip không làm hỏng Header dính) */
+body {
+  overflow-x: clip;
+}
+
+/* Bỏ độ trễ 300 ms khi chạm và làm màu nháy khi chạm dịu hơn */
+a,
+button,
+input,
+select,
+label {
+  touch-action: manipulation;
+}
+a,
+button {
+  -webkit-tap-highlight-color: rgba(31, 95, 214, 0.15);
+}
+
+@media (max-width: 639px) {
+  /* Nhãn sơ đồ ladder to hơn: khung vẽ co lại còn khoảng 0,6 lần nên chữ 16px bị quá nhỏ */
+  .lbl,
+  .lbl-coil {
+    font-size: 21px;
+  }
+  /* Nút bấm đủ lớn cho ngón tay (tối thiểu 44px) */
+  .ladder-btn {
+    min-height: 44px;
+  }
+}
+
+/* ===== Hiệu ứng xuất hiện khi cuộn (điều khiển bởi assets/js/reveal.js) ===== */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.js-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Khi in trang: luôn hiện đầy đủ */
+@media print {
+  .js-reveal [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kiến thức tự động hóa miễn phí: PLC, HMI, biến tần, ESP32 | Automation DQ</title>
+  <meta name="description" content="Bài viết hướng dẫn miễn phí về PLC, HMI, biến tần, ESP32, cảm biến và điện công nghiệp. Viết từ lỗi thật ngoài hiện trường, đọc xong là làm được.">
+  <meta name="theme-color" content="#0B2A5B">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Thứ tự quan trọng: components, dữ liệu bài viết, rồi logic trang -->
+  <script src="assets/js/components.js" defer></script>
+  <script src="assets/js/kien-thuc-data.js" defer></script>
+  <script src="assets/js/kien-thuc.js" defer></script>
+</head>
+
+<body class="font-sans text-ink antialiased">
+
+  <!-- HEADER dùng chung (mục "Kiến thức" được tô sáng) -->
+  <div id="site-header" data-active="kien-thuc"></div>
+
+  <main id="noi-dung">
+
+    <!-- ===== DANH SÁCH BÀI VIẾT ===== -->
+    <section id="view-list">
+      <div class="mx-auto max-w-page px-4 py-12 sm:px-6 lg:py-16">
+        <h1 class="max-w-3xl text-3xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-4xl">
+          Kiến thức tự động hóa, đọc miễn phí
+        </h1>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+          Hướng dẫn về PLC, HMI, biến tần, ESP32, cảm biến và điện công nghiệp. Viết từ những lỗi thật gặp ngoài hiện trường, không cần đăng ký.
+        </p>
+
+        <div class="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div id="filters" role="group" aria-label="Lọc theo chủ đề" class="flex flex-wrap gap-2"></div>
+          <div class="lg:w-72">
+            <label for="search" class="sr-only">Tìm bài viết</label>
+            <input id="search" type="search" autocomplete="off"
+                   placeholder="Tìm bài, ví dụ: RS485, timer..."
+                   class="w-full rounded-md border border-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none">
+          </div>
+        </div>
+
+        <p id="result-count" class="mt-6 text-sm text-slate-500" aria-live="polite"></p>
+        <ul id="list" class="mt-3 divide-y divide-line border-y border-line"></ul>
+        <p id="empty" hidden class="mt-6 rounded-md border border-line bg-paper px-5 py-6 text-slate-600">
+          Chưa có bài phù hợp. Thử bỏ bớt từ khóa hoặc chọn "Tất cả" để xem toàn bộ bài viết.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== ĐỌC BÀI (nội dung do kien-thuc.js tạo ra) ===== -->
+    <article id="view-reader" hidden></article>
+
+  </main>
+
+  <!-- FOOTER dùng chung -->
+  <div id="site-footer"></div>
+
+</body>
+</html>

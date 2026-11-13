@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automation DQ | Kiến thức tự động hóa và source code PLC, ESP32</title>
+  <meta name="description" content="Bài viết hướng dẫn PLC, biến tần, ESP32 và source code kèm sơ đồ đấu dây, video demo chạy thật. Tải về, lắp lên máy thật và chạy được.">
+  <meta name="theme-color" content="#0B2A5B">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Automation DQ | Kiến thức tự động hóa và source code">
+  <meta property="og:description" content="Source code PLC, ESP32 kèm sơ đồ đấu dây và bài giải thích từng bước.">
+  <meta property="og:locale" content="vi_VN">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script src="assets/js/components.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
+</head>
+
+<body class="font-sans text-ink antialiased">
+
+  <!-- HEADER dùng chung -->
+  <div id="site-header" data-active=""></div>
+
+  <main id="noi-dung">
+
+    <!-- ===== HERO ===== -->
+    <section class="bg-white">
+      <div class="mx-auto grid max-w-page items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-20">
+
+        <div>
+          <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-5xl">
+            Source code PLC chạy được ngoài tủ điện
+          </h1>
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
+            Chương trình, sơ đồ đấu dây và bài giải thích từng bước cho PLC, biến tần và ESP32.
+            Tải về, lắp lên máy thật, không phải mò lại từ đầu.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="source-code.html"
+               class="inline-flex items-center justify-center rounded-md bg-navy-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-navy-800">
+              Xem source code
+            </a>
+            <a href="kien-thuc.html"
+               class="inline-flex items-center justify-center rounded-md border border-navy-900/25 px-6 py-3.5 text-base font-semibold text-navy-900 transition-colors hover:border-navy-900 hover:bg-paper">
+              Đọc kiến thức miễn phí
+            </a>
+          </div>
+
+          <ul class="mt-8 flex flex-col gap-2.5 text-sm text-slate-700 sm:flex-row sm:flex-wrap sm:gap-x-6">
+            <li class="flex items-center gap-2">
+              <svg class="h-5 w-5 text-brand" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+              Có video demo chạy thật
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-5 w-5 text-brand" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+              Kèm sơ đồ đấu dây
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-5 w-5 text-brand" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+              Hỗ trợ qua Zalo
+            </li>
+          </ul>
+        </div>
+
+        <!-- Sơ đồ ladder tương tác: điểm nhấn duy nhất của trang -->
+        <div id="ladder" class="rounded-xl border border-line bg-paper p-4 sm:p-6">
+          <svg viewBox="0 0 560 220" class="h-auto w-full" role="img"
+               aria-label="Sơ đồ ladder mạch tự giữ: nút START song song tiếp điểm Y0, nối tiếp nút STOP thường đóng, cấp điện cho cuộn Y0 điều khiển động cơ">
+
+            <!-- hai thanh nguồn -->
+            <line class="ladder-rail" x1="30" y1="20" x2="30" y2="200"/>
+            <line class="ladder-rail" x1="530" y1="20" x2="530" y2="200"/>
+
+            <!-- dây luôn có điện (từ thanh nguồn trái) -->
+            <path class="wire on" d="M30 80 H100 M100 80 V150 M100 80 H150 M100 150 H150"/>
+
+            <!-- dây sau từng tiếp điểm -->
+            <path id="w-start" class="wire" d="M180 80 H250"/>
+            <path id="w-seal"  class="wire" d="M180 150 H250"/>
+            <path id="w-mid"   class="wire" d="M250 80 V150 M250 80 H320"/>
+            <path id="w-out"   class="wire" d="M350 80 H414"/>
+            <path id="w-rail"  class="wire" d="M466 80 H530"/>
+
+            <!-- X0: nút START (thường hở) -->
+            <g id="c-start" class="contact">
+              <line x1="150" y1="62" x2="150" y2="98"/>
+              <line x1="180" y1="62" x2="180" y2="98"/>
+            </g>
+            <text class="lbl" x="165" y="48" text-anchor="middle">X0 START</text>
+
+            <!-- Y0: tiếp điểm tự giữ (thường hở) -->
+            <g id="c-seal" class="contact">
+              <line x1="150" y1="132" x2="150" y2="168"/>
+              <line x1="180" y1="132" x2="180" y2="168"/>
+            </g>
+            <text class="lbl" x="165" y="196" text-anchor="middle">Y0 tự giữ</text>
+
+            <!-- X1: nút STOP (thường đóng, có gạch chéo) -->
+            <g id="c-stop" class="contact on">
+              <line x1="320" y1="62" x2="320" y2="98"/>
+              <line x1="350" y1="62" x2="350" y2="98"/>
+              <line x1="314" y1="98" x2="356" y2="62"/>
+            </g>
+            <text class="lbl" x="335" y="48" text-anchor="middle">X1 STOP</text>
+
+            <!-- Y0: cuộn ngõ ra -->
+            <circle id="coil" class="coil" cx="440" cy="80" r="26"/>
+            <text class="lbl-coil" x="440" y="86" text-anchor="middle">Y0</text>
+            <text class="lbl" x="440" y="132" text-anchor="middle">Động cơ</text>
+          </svg>
+
+          <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex gap-2">
+              <button id="btn-start" type="button"
+                      class="ladder-btn rounded-md bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-800">
+                Bấm START
+              </button>
+              <button id="btn-stop" type="button"
+                      class="ladder-btn rounded-md border border-navy-900/30 bg-white px-5 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900">
+                Bấm STOP
+              </button>
+            </div>
+            <p id="ladder-status" role="status" aria-live="polite" class="flex items-center gap-2 text-sm font-medium text-navy-900">
+              Y0 mất điện: động cơ dừng
+            </p>
+          </div>
+
+          <p class="mt-3 flex items-center gap-2 text-sm leading-relaxed text-slate-600">
+            <span id="ladder-dot" class="inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-slate-300" aria-hidden="true"></span>
+            Đây là mạch tự giữ, bài đầu tiên trong giáo trình PLC. Bấm START rồi nhìn: nhả nút ra mà động cơ vẫn chạy, vì tiếp điểm Y0 giữ dòng điện thay cho nút.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CHỦ ĐỀ ===== -->
+    <section class="border-t border-line bg-white">
+      <div class="mx-auto max-w-page px-4 py-16 sm:px-6">
+        <h2 class="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">Bạn đang làm phần nào của hệ thống?</h2>
+        <p class="mt-3 max-w-2xl text-slate-600">
+          Chọn đúng mảng bạn đang gặp. Mỗi mảng có bài hướng dẫn, tài liệu miễn phí và source code liên quan.
+        </p>
+
+        <div class="mt-10 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-3">
+          <a href="kien-thuc.html?danh-muc=plc" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">PLC</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Mitsubishi, INVT, WECON: mạch tự giữ, liên động, đếm, định thời, giao tiếp Modbus.</p>
+          </a>
+          <a href="kien-thuc.html?danh-muc=hmi" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">HMI và màn hình vận hành</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Thiết kế giao diện cho người vận hành, kết nối PLC, đọc lại chương trình từ HMI.</p>
+          </a>
+          <a href="kien-thuc.html?danh-muc=bien-tan" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">Biến tần</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Cài thông số, chạy theo tần số, điều khiển tốc độ qua RS485 từ PLC.</p>
+          </a>
+          <a href="kien-thuc.html?danh-muc=esp32-iot" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">ESP32 và IoT</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Firmware, MQTT, dashboard giám sát từ xa và cảnh báo về điện thoại.</p>
+          </a>
+          <a href="kien-thuc.html?danh-muc=cam-bien" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">Cảm biến và đo lường</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">PT100, cảm biến đất NPK, đấu dây, hiệu chuẩn và đọc giá trị cho đúng.</p>
+          </a>
+          <a href="kien-thuc.html?danh-muc=dien-cong-nghiep" class="block border-b border-r border-line p-6 transition-colors hover:bg-paper">
+            <h3 class="text-lg font-semibold text-navy-900">Điện công nghiệp</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Mạch động lực, khởi động từ, bảo vệ quá tải, đọc và vẽ sơ đồ tủ điện.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SOURCE CODE NỔI BẬT ===== -->
+    <section class="border-t border-line bg-paper">
+      <div class="mx-auto max-w-page px-4 py-16 sm:px-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">Source code được tải nhiều</h2>
+            <p class="mt-3 max-w-2xl text-slate-600">
+              Mỗi gói gồm chương trình hoàn chỉnh, sơ đồ đấu dây và hướng dẫn cài đặt.
+            </p>
+          </div>
+          <a href="source-code.html" class="text-sm font-semibold text-brand hover:text-brand-dark hover:underline">Xem tất cả source code</a>
+        </div>
+
+        <!-- Nội dung và giá dưới đây là dữ liệu mẫu, hãy thay bằng sản phẩm thật -->
+        <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+          <article class="flex flex-col rounded-lg border border-line bg-white">
+            <div class="border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">PLC và cảm biến</div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-lg font-semibold text-navy-900">Điều khiển động cơ theo nhiệt độ PT100</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                Tự dừng động cơ khi nhiệt độ chạm 25°C và chạy lại khi xuống 20°C. Hai ngưỡng này chỉnh được.
+              </p>
+              <ul class="mt-4 space-y-1.5 text-sm text-slate-700">
+                <li>Chương trình PLC hoàn chỉnh</li>
+                <li>Sơ đồ đấu dây cảm biến PT100</li>
+                <li>Video demo chạy thật</li>
+              </ul>
+              <div class="mt-auto flex items-center justify-between pt-6">
+                <p class="text-lg font-bold text-navy-900">199.000đ</p>
+                <a href="source-code.html" class="rounded-md border border-navy-900/30 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900 hover:bg-paper">Xem chi tiết</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="flex flex-col rounded-lg border border-line bg-white">
+            <div class="border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">ESP32 và IoT</div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-lg font-semibold text-navy-900">Tưới tự động ESP32 kèm dashboard MQTT</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                Mở, tắt van tưới từ xa trên điện thoại. Có chế độ tự động và chế độ bằng tay.
+              </p>
+              <ul class="mt-4 space-y-1.5 text-sm text-slate-700">
+                <li>Firmware ESP32 và giao diện dashboard</li>
+                <li>Sơ đồ nối relay, van, nguồn</li>
+                <li>Hướng dẫn cấu hình MQTT</li>
+              </ul>
+              <div class="mt-auto flex items-center justify-between pt-6">
+                <p class="text-lg font-bold text-navy-900">299.000đ</p>
+                <a href="source-code.html" class="rounded-md border border-navy-900/30 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900 hover:bg-paper">Xem chi tiết</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="flex flex-col rounded-lg border border-line bg-white">
+            <div class="border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">Điện tử số</div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-lg font-semibold text-navy-900">Mạch đếm chiều dài không cần vi điều khiển</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                Đếm bằng IC 74LS192, giải mã 74LS47 và hiển thị trên LED 7 đoạn anode chung.
+              </p>
+              <ul class="mt-4 space-y-1.5 text-sm text-slate-700">
+                <li>File mô phỏng Proteus</li>
+                <li>Sơ đồ nguyên lý</li>
+                <li>Giải thích nguyên lý hoạt động</li>
+              </ul>
+              <div class="mt-auto flex items-center justify-between pt-6">
+                <p class="text-lg font-bold text-navy-900">149.000đ</p>
+                <a href="source-code.html" class="rounded-md border border-navy-900/30 px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900 hover:bg-paper">Xem chi tiết</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BÀI VIẾT MỚI ===== -->
+    <section class="border-t border-line bg-white">
+      <div class="mx-auto max-w-page px-4 py-16 sm:px-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">Bài viết mới nhất</h2>
+            <p class="mt-3 max-w-2xl text-slate-600">Viết từ những lỗi thật gặp ngoài hiện trường, đọc xong là làm được.</p>
+          </div>
+          <a href="kien-thuc.html" class="text-sm font-semibold text-brand hover:text-brand-dark hover:underline">Xem tất cả bài viết</a>
+        </div>
+
+        <ul class="mt-8 divide-y divide-line border-y border-line">
+          <li>
+            <a href="kien-thuc.html" class="group grid gap-1 py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">
+              <div>
+                <h3 class="text-lg font-semibold text-navy-900 group-hover:text-brand">Mạch tự giữ trong PLC: vì sao nhả nút START mà động cơ vẫn chạy?</h3>
+                <p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">Giải thích từng bước bằng sơ đồ ladder, kèm lỗi hay gặp khi quên tiếp điểm STOP thường đóng.</p>
+              </div>
+              <p class="text-sm text-slate-500">PLC, 6 phút đọc</p>
+            </a>
+          </li>
+          <li>
+            <a href="kien-thuc.html" class="group grid gap-1 py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">
+              <div>
+                <h3 class="text-lg font-semibold text-navy-900 group-hover:text-brand">Điều khiển biến tần qua RS485: 5 lỗi hay gặp khi mới đấu nối</h3>
+                <p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">Sai cực A/B, sai tốc độ truyền, sai địa chỉ thanh ghi. Cách kiểm tra từng lỗi trong vài phút.</p>
+              </div>
+              <p class="text-sm text-slate-500">Biến tần, 9 phút đọc</p>
+            </a>
+          </li>
+          <li>
+            <a href="kien-thuc.html" class="group grid gap-1 py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">
+              <div>
+                <h3 class="text-lg font-semibold text-navy-900 group-hover:text-brand">ESP32 gửi dữ liệu cảm biến lên MQTT: từ dây nối đến dashboard</h3>
+                <p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">Đi hết một vòng: đọc cảm biến, kết nối WiFi, publish dữ liệu và hiển thị trên điện thoại.</p>
+              </div>
+              <p class="text-sm text-slate-500">ESP32, 8 phút đọc</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== CÁCH MUA (đây là một chuỗi bước nên đánh số) ===== -->
+    <section class="border-t border-line bg-paper">
+      <div class="mx-auto max-w-page px-4 py-16 sm:px-6">
+        <h2 class="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">Mua source code thế nào?</h2>
+        <p class="mt-3 max-w-2xl text-slate-600">Bốn bước, không cần tạo tài khoản.</p>
+
+        <ol class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <li>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-white" aria-hidden="true">1</span>
+            <h3 class="mt-4 text-base font-semibold text-navy-900">Chọn dự án</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-600">Xem mô tả, danh sách file kèm theo và video demo để chắc chắn đúng thứ bạn cần.</p>
+          </li>
+          <li>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-white" aria-hidden="true">2</span>
+            <h3 class="mt-4 text-base font-semibold text-navy-900">Nhắn Zalo và thanh toán</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-600">Gửi tên dự án qua Zalo, chuyển khoản theo mã QR được gửi lại.</p>
+          </li>
+          <li>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-white" aria-hidden="true">3</span>
+            <h3 class="mt-4 text-base font-semibold text-navy-900">Nhận link tải</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-600">Nhận source code, sơ đồ đấu dây và hướng dẫn cài đặt đầy đủ.</p>
+          </li>
+          <li>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-white" aria-hidden="true">4</span>
+            <h3 class="mt-4 text-base font-semibold text-navy-900">Lắp và được hỗ trợ</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-600">Gặp lỗi khi chạy thử thì nhắn lại, mình xem cùng bạn.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== CTA CUỐI TRANG ===== -->
+    <section class="bg-navy-900">
+      <div class="mx-auto flex max-w-page flex-col gap-8 px-4 py-16 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+        <div class="max-w-2xl">
+          <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Máy của bạn khác một chút so với bản mẫu?</h2>
+          <p class="mt-3 leading-relaxed text-slate-200">
+            Gửi cho mình loại PLC, biến tần và yêu cầu của bạn. Mình sẽ cho biết source nào dùng được ngay, chỗ nào cần chỉnh.
+          </p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href="https://zalo.me/0971048764" target="_blank" rel="noopener"
+             class="inline-flex items-center justify-center rounded-md bg-white px-6 py-3.5 text-base font-semibold text-navy-900 transition-colors hover:bg-brand-soft">
+            Nhắn Zalo 0971 048 764
+          </a>
+          <a href="mailto:automationDQ03@gmail.com"
+             class="inline-flex items-center justify-center rounded-md border border-white/40 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-white hover:bg-white/10">
+            Gửi email
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER dùng chung -->
+  <div id="site-footer"></div>
+
+</body>
+</html>
