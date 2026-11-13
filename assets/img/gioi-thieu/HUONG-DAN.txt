@@ -1,0 +1,11 @@
+HUONG DAN THEM ANH CHO TRANG GIOI THIEU (gioi-thieu.html)
+
+1. Anh chan dung: dat ten  chan-dung.jpg  (ti le vuong, khoang 600x600 la du).
+2. Anh minh chung: dat ten  minh-chung-1.jpg ... minh-chung-6.jpg
+   - Muon them anh khac: them mot dong vao mang PHOTOS o cuoi file gioi-thieu.html.
+   - Muon doi tieu de/mo ta: sua title va note trong mang PHOTOS.
+3. Nen dung .jpg, moi anh duoi 500 KB de trang tai nhanh.
+4. Anh chua co file thi tu dong an, khong hien khung trong.
+
+LUU Y RIENG TU: truoc khi dua len web, che so CCCD, ma so sinh vien, so seri, ma QR
+tren bang cap va giay to.

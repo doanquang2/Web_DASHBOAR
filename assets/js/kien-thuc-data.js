@@ -376,6 +376,174 @@ nhiệt độ &lt;= 20°C   →  cho phép chạy lại
   <li>Chỉ nối động cơ sau khi mạch điều khiển đã hoạt động đúng.</li>
 </ol>
 `
+},
+
+{
+  slug: 'bien-tan-kaman-km600-modbus-rs485',
+  category: 'bien-tan',
+  title: 'Biến tần Kaman KM600 qua RS485 Modbus RTU: cài tham số, thanh ghi và khung truyền có sẵn CRC',
+  summary: 'Cài F18, F02.00, F01.00 trên biến tần, bảng thanh ghi 2000H, 2001H, 2100H và các khung Modbus RTU để PLC Wecon (hoặc máy tính) chạy, dừng, đặt tần số, đọc trạng thái.',
+  minutes: 10,
+  body: `
+<p>Bài này gom lại toàn bộ phần cần thiết để điều khiển biến tần <strong>Kaman KM600</strong> từ PLC (ví dụ PLC Wecon làm master) qua cổng RS485 tích hợp, theo giao thức Modbus RTU. Số liệu lấy từ tài liệu hướng dẫn KM600 (nhóm tham số F18 và chương 9 Communication Protocol). Mọi giá trị nên được kiểm chứng lại trên biến tần thật trước khi nối tải.</p>
+
+<h2>1. Đấu nối phần cứng</h2>
+<ul>
+  <li>Cổng RS485 của biến tần gồm 3 đầu: <code>A</code> (tín hiệu vi sai +), <code>B</code> (tín hiệu vi sai −) và <code>GND</code>. Cổng được cách ly bên trong với COM.</li>
+  <li>Dùng cáp xoắn đôi có bọc chống nhiễu, chiều dài tối đa theo catalog là 300 m.</li>
+  <li>Biến tần có công tắc gạt chọn điện trở cuối 120 Ω (mặc định OFF). Chỉ bật ON ở biến tần nằm cuối đường truyền.</li>
+  <li>Nối A của PLC với A của biến tần, B với B. Nếu không có phản hồi thì đảo lại A/B, vì mỗi hãng ký hiệu một kiểu.</li>
+</ul>
+
+<h2>2. Cài đặt tham số trên biến tần</h2>
+<table>
+  <thead><tr><th>Tham số</th><th>Ý nghĩa</th><th>Giá trị dùng</th></tr></thead>
+  <tbody>
+    <tr><td><code>F18.00</code></td><td>Địa chỉ trạm (0 là broadcast)</td><td>1 đến 247, ví dụ 1</td></tr>
+    <tr><td><code>F18.01</code></td><td>Tốc độ truyền: hàng đơn vị là Modbus (5 = 9600, 6 = 19200, 7 = 38400, 8 = 57600, 9 = 115200); hàng chục là CAN</td><td>Ví dụ <code>45</code> là Modbus 9600 và CAN 250K (giá trị mặc định)</td></tr>
+    <tr><td><code>F18.02</code></td><td>Khung dữ liệu: 0 = 8-N-2, 1 = 8-E-1, 2 = 8-O-1, 3 = 8-N-1</td><td>Chọn giống cấu hình cổng của PLC</td></tr>
+    <tr><td><code>F18.03</code></td><td>Thời gian trễ trả lời</td><td>Mặc định 2 ms</td></tr>
+    <tr><td><code>F18.04</code></td><td>Thời gian báo lỗi mất truyền thông (0.0 là tắt, 0.1 đến 60.0 s)</td><td>Nên đặt, ví dụ 2.0 s</td></tr>
+    <tr><td><code>F18.05</code></td><td>Cách xử lý khi mất truyền thông: 0 = báo lỗi và dừng tự do, 1 = báo lỗi và dừng theo kiểu dừng đã cài, 2 = không báo lỗi, tiếp tục chạy</td><td>Nên chọn 0 hoặc 1</td></tr>
+    <tr><td><code>F02.00</code></td><td>Nguồn lệnh chạy: 3 hoặc 4 là lệnh từ truyền thông (3 là phím STOP bị vô hiệu, 4 là phím STOP vẫn dùng được)</td><td><code>3</code> hoặc <code>4</code></td></tr>
+    <tr><td><code>F01.00</code></td><td>Nguồn đặt tần số X</td><td><code>9</code> (Communication setting)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-warn">
+  <p><strong>Tài liệu có hai chỗ mâu thuẫn về giá trị mặc định.</strong> Mục 9.2 ghi mặc định là E-8-1, 19200 bps, nhưng bảng tham số F18 cho mặc định 9600 bps (<code>F18.01 = 45</code>) và 8-N-2 (<code>F18.02 = 0</code>). Đừng tin vào mặc định: vào phím biến tần đọc lại F18.01 và F18.02 rồi cài PLC cho khớp.</p>
+</div>
+
+<div class="callout">
+  <p><strong>Nhớ chuyển cả hai nguồn.</strong> Chỉ đặt <code>F02.00</code> mà để <code>F01.00</code> là nguồn khác thì lệnh chạy qua RS485 được nhưng ghi tần số không làm tốc độ đổi. Ngược lại, chỉ đổi <code>F01.00</code> thì tần số nhận nhưng vẫn phải bấm tay để chạy.</p>
+</div>
+
+<h2>3. Bảng thanh ghi dùng khi điều khiển</h2>
+<p>Dùng mã chức năng <code>0x03</code> (đọc), <code>0x06</code> (ghi một thanh ghi). Biến tần chỉ hỗ trợ chế độ RTU.</p>
+<table>
+  <thead><tr><th>Địa chỉ</th><th>Chức năng</th><th>Giá trị</th><th>R/W</th></tr></thead>
+  <tbody>
+    <tr><td><code>2000H</code></td><td>Lệnh điều khiển</td><td>1 chạy thuận, 2 chạy nghịch, 3 jog thuận, 4 jog nghịch, 5 dừng giảm tốc, 6 dừng tự do (khẩn cấp), 7 reset lỗi</td><td>W</td></tr>
+    <tr><td><code>2001H</code></td><td>Tần số đặt</td><td>-10000 đến 10000, tương ứng -200.0% đến 200.0%</td><td>W</td></tr>
+    <tr><td><code>2002H</code></td><td>Giới hạn trên tần số chạy thuận</td><td>0 đến 10000, tương ứng 0.0 Hz đến F01.07</td><td>W</td></tr>
+    <tr><td><code>2003H</code></td><td>Giới hạn trên tần số chạy nghịch</td><td>0 đến 10000, tương ứng 0.0 Hz đến F01.07</td><td>W</td></tr>
+    <tr><td><code>2100H</code></td><td>Tần số ra</td><td>Đọc</td><td>R</td></tr>
+    <tr><td><code>2101H</code></td><td>Tần số đặt (trạng thái)</td><td>Đọc</td><td>W/R</td></tr>
+    <tr><td><code>2102H</code></td><td>Dòng ra</td><td>Đọc</td><td>R</td></tr>
+    <tr><td><code>210AH</code></td><td>Trạng thái biến tần</td><td>1 chạy thuận, 2 chạy nghịch, 3 jog thuận, 4 jog nghịch, 5 lỗi, 6 thấp áp, 7 dừng</td><td>R</td></tr>
+    <tr><td><code>210BH</code></td><td>Mã lỗi</td><td>0 là không lỗi, ví dụ 22 là lỗi truyền thông (xem bảng lỗi trong catalog)</td><td>R</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-warn">
+  <p><strong>Đơn vị của thanh ghi 2001H cần kiểm chứng.</strong> Catalog ghi -10000 đến 10000 ứng với -200.0% đến 200.0%, trong khi các thanh ghi 2002H và 2003H lại ghi 10000 ứng với 100% của F01.07. Hai cách hiểu cho hai kết quả khác nhau (10000 có thể là 100% hoặc 200% tần số tối đa). Cách an toàn: bật biến tần không tải, ghi thử một giá trị nhỏ vào 2001H rồi đọc lại 2100H để xác định hệ số thật. Ngoài ra bảng ghi nhãn "F99.99" cho 2100H, nhiều khả năng là in nhầm của F99.00.</p>
+</div>
+
+<h2>4. Khung Modbus RTU mẫu (địa chỉ trạm 1)</h2>
+<p>Các khung dưới đây ghi dạng hex, hai byte cuối là CRC16 (byte thấp trước, byte cao sau). Đã tính CRC sẵn cho trạm số 1, nếu đổi địa chỉ trạm thì phải tính lại.</p>
+<table>
+  <thead><tr><th>Việc cần làm</th><th>Khung gửi</th></tr></thead>
+  <tbody>
+    <tr><td>Chạy thuận</td><td><code>01 06 20 00 00 01 43 CA</code></td></tr>
+    <tr><td>Chạy nghịch</td><td><code>01 06 20 00 00 02 03 CB</code></td></tr>
+    <tr><td>Dừng giảm tốc</td><td><code>01 06 20 00 00 05 42 09</code></td></tr>
+    <tr><td>Reset lỗi</td><td><code>01 06 20 00 00 07 C3 C8</code></td></tr>
+    <tr><td>Ghi 2001H = 2500 (0x09C4)</td><td><code>01 06 20 01 09 C4 D4 09</code></td></tr>
+    <tr><td>Đọc 3 thanh ghi từ 2100H (tần số ra, tần số đặt, dòng)</td><td><code>01 03 21 00 00 03 0F F7</code></td></tr>
+    <tr><td>Đọc trạng thái và mã lỗi (210AH, 210BH)</td><td><code>01 03 21 0A 00 02 EE 35</code></td></tr>
+    <tr><td>Ghi F01.00 = 9 (nguồn tần số là truyền thông)</td><td><code>01 06 01 00 00 09 48 30</code></td></tr>
+    <tr><td>Ghi F02.00 = 3 (lệnh chạy từ truyền thông)</td><td><code>01 06 02 00 00 03 C8 73</code></td></tr>
+  </tbody>
+</table>
+<p>Với lệnh ghi <code>0x06</code>, biến tần trả về đúng khung đã nhận. Với lệnh đọc <code>0x03</code>, biến tần trả về địa chỉ trạm, mã 03, số byte dữ liệu rồi các thanh ghi (byte cao trước).</p>
+
+<h2>5. Địa chỉ tham số F và cách tránh mòn EEPROM</h2>
+<ul>
+  <li>Địa chỉ tham số gồm byte cao là số nhóm (F01 là <code>0x01</code>, F18 là <code>0x12</code>, F19 là <code>0x13</code>...) và byte thấp là số thứ tự trong nhóm, viết hex. Ví dụ F01.12 có địa chỉ <code>0x010C</code>.</li>
+  <li>Ghi vào địa chỉ này sẽ lưu vào EEPROM. Nếu ghi liên tục sẽ làm giảm tuổi thọ bộ nhớ. Cộng thêm <code>0x40</code> vào byte cao để chỉ ghi vào RAM, ví dụ <code>0x410C</code> thay cho <code>0x010C</code>.</li>
+  <li>Đọc tối đa 16 địa chỉ liên tiếp trong một lần, nhiều hơn biến tần trả lỗi. Ghi chỉ được từng thanh ghi một.</li>
+  <li>Tham số chỉ đọc, hoặc tham số không cho sửa khi đang chạy, sẽ bị từ chối. Mật khẩu người dùng và chức năng autotune không ghi được qua truyền thông.</li>
+</ul>
+
+<h2>6. Phía PLC Wecon (master)</h2>
+<p>Tên lệnh Modbus và cách khai báo cổng phụ thuộc vào dòng PLC và phiên bản phần mềm lập trình Wecon. Hãy tra đúng tài liệu của PLC bạn đang dùng. Những điều cần khớp thì không phụ thuộc phần mềm:</p>
+<ul>
+  <li><strong>Cổng truyền thông:</strong> đặt chế độ Modbus RTU master, cùng tốc độ truyền và cùng khung dữ liệu (parity, stop bit) với <code>F18.01</code> và <code>F18.02</code> của biến tần.</li>
+  <li><strong>Địa chỉ trạm:</strong> bằng <code>F18.00</code>.</li>
+  <li><strong>Hệ đếm của địa chỉ thanh ghi:</strong> catalog ghi dạng hex. Nếu lệnh của PLC nhận số thập phân thì đổi: <code>2000H = 8192</code>, <code>2001H = 8193</code>, <code>2100H = 8448</code>, <code>210AH = 8458</code>, <code>210BH = 8459</code>. Một số hệ thống còn cộng thêm 40001 hoặc lệch 1 đơn vị, hãy thử đọc <code>2100H</code> khi biến tần đang chạy để xác nhận.</li>
+</ul>
+<p>Trình tự vòng quét nên dùng:</p>
+<ol>
+  <li>Cài <code>F02.00</code> và <code>F01.00</code> bằng phím một lần khi lắp đặt, không cần ghi qua RS485 mỗi lần chạy.</li>
+  <li>Khi có lệnh chạy: ghi tần số vào <code>2001H</code> trước, rồi ghi <code>0001</code> vào <code>2000H</code>.</li>
+  <li>Khi đổi tần số: chỉ ghi lại <code>2001H</code> lúc giá trị thay đổi, không ghi lặp mỗi vòng quét.</li>
+  <li>Đọc <code>2100H</code> (tần số ra), <code>210AH</code> (trạng thái), <code>210BH</code> (mã lỗi) theo chu kỳ khoảng 200 đến 500 ms.</li>
+  <li>Khi dừng: ghi <code>0005</code> vào <code>2000H</code> (dừng giảm tốc). Dừng khẩn cấp dùng <code>0006</code> nhưng không thay thế được mạch dừng khẩn cấp phần cứng.</li>
+  <li>Khi có lỗi (<code>210AH = 5</code>): xử lý nguyên nhân rồi mới ghi <code>0007</code> để reset.</li>
+</ol>
+<p>Mỗi lệnh chờ hồi đáp (hoặc hết thời gian chờ) xong mới gửi lệnh tiếp theo. Giữa hai khung phải có khoảng nghỉ tối thiểu 3.5 ký tự, tức khoảng 4 ms ở 9600 bps.</p>
+
+<h2>7. Kiểm tra nhanh bằng máy tính (USB sang RS485)</h2>
+<p>Nên chạy thử bằng script này trước khi lập trình PLC. Nếu máy tính điều khiển được mà PLC thì không, lỗi nằm ở cài đặt trên PLC. Ví dụ dưới dùng 9600 bps, 8-N-2 (mặc định theo bảng F18), cần cài <code>pyserial</code>:</p>
+<pre><code>import serial, time
+
+def crc16(data: bytes) -&gt; bytes:
+    crc = 0xFFFF
+    for b in data:
+        crc ^= b
+        for _ in range(8):
+            crc = (crc &gt;&gt; 1) ^ 0xA001 if crc &amp; 1 else crc &gt;&gt; 1
+    return bytes([crc &amp; 0xFF, crc &gt;&gt; 8])   # byte thấp gửi trước
+
+def request(ser, frame: bytes) -&gt; bytes:
+    ser.reset_input_buffer()
+    ser.write(frame + crc16(frame))
+    time.sleep(0.1)
+    return ser.read(64)
+
+SLAVE = 1
+ser = serial.Serial("COM5", 9600, bytesize=8, parity="N", stopbits=2, timeout=0.5)
+
+def write_reg(addr, val):
+    return request(ser, bytes([SLAVE, 0x06, addr &gt;&gt; 8, addr &amp; 0xFF, val &gt;&gt; 8, val &amp; 0xFF]))
+
+def read_regs(addr, n):
+    return request(ser, bytes([SLAVE, 0x03, addr &gt;&gt; 8, addr &amp; 0xFF, 0, n]))
+
+print(write_reg(0x2001, 500).hex(" "))    # tần số đặt nhỏ để thử, kiểm tra hệ số ở mục 3
+print(write_reg(0x2000, 1).hex(" "))      # chạy thuận
+time.sleep(3)
+print(read_regs(0x2100, 3).hex(" "))      # tần số ra, tần số đặt, dòng
+print(read_regs(0x210A, 2).hex(" "))      # trạng thái, mã lỗi
+print(write_reg(0x2000, 5).hex(" "))      # dừng giảm tốc
+ser.close()</code></pre>
+<p>Hàm <code>crc16</code> ở trên cho đúng các giá trị CRC trong bảng mục 4 (ví dụ khung chạy thuận kết thúc bằng <code>43 CA</code>).</p>
+
+<h2>8. Khi biến tần trả lỗi</h2>
+<p>Khi có lỗi, biến tần trả khung gồm địa chỉ trạm, mã lệnh đặt bit 7 lên 1 (<code>0x83</code> khi đọc, <code>0x86</code> khi ghi), mã lỗi và CRC.</p>
+<table>
+  <thead><tr><th>Mã lỗi</th><th>Tên</th><th>Nguyên nhân thường gặp</th></tr></thead>
+  <tbody>
+    <tr><td><code>0x01</code></td><td>Illegal CMD</td><td>Mã chức năng không tồn tại hoặc không hỗ trợ</td></tr>
+    <tr><td><code>0x02</code></td><td>Illegal Data Address</td><td>Địa chỉ sai, vượt phạm vi, hoặc đọc thanh ghi chỉ ghi (ghi thanh ghi chỉ đọc)</td></tr>
+    <tr><td><code>0x03</code></td><td>Illegal Data</td><td>Giá trị ngoài phạm vi, tham số chỉ đọc, tham số không cho sửa lúc đang chạy, hoặc biến tần đang bận lưu bộ nhớ</td></tr>
+  </tbody>
+</table>
+
+<h2>9. Danh sách kiểm tra khi không có phản hồi</h2>
+<ol>
+  <li>Đảo cặp A/B.</li>
+  <li>Đọc lại <code>F18.00</code>, <code>F18.01</code>, <code>F18.02</code> trên phím và so với cài đặt của PLC.</li>
+  <li>Đúng nguồn lệnh: <code>F02.00 = 3</code> hoặc <code>4</code>, <code>F01.00 = 9</code>.</li>
+  <li>Kiểm tra hệ đếm và độ lệch của địa chỉ thanh ghi trong lệnh PLC.</li>
+  <li>Điện trở cuối 120 Ω chỉ bật ở thiết bị cuối đường truyền, dây RS485 đi tách khỏi dây động lực.</li>
+  <li>Biến tần báo lỗi truyền thông (mã 22) thì kiểm tra <code>F18.04</code>: PLC phải gửi lệnh đều đặn trong thời gian đó, vì nếu không biến tần sẽ báo lỗi và dừng theo <code>F18.05</code>.</li>
+</ol>
+
+<div class="callout callout-warn">
+  <p><strong>An toàn:</strong> cài <code>F18.04</code> khác 0 và chọn <code>F18.05</code> là dừng, để khi đứt dây hay PLC treo thì biến tần tự dừng thay vì chạy mãi theo lệnh cuối cùng. Lần đầu thử nên tháo tải hoặc cho động cơ chạy không tải ở tần số thấp.</p>
+</div>
+`
 }
 
 ];
