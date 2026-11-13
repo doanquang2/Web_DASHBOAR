@@ -379,6 +379,189 @@ nhiệt độ &lt;= 20°C   →  cho phép chạy lại
 },
 
 {
+  slug: 'siemens-s7-1200-modbus-rtu-cm1241',
+  category: 'plc',
+  title: 'Siemens S7-1200 truyền thông Modbus RTU: cấu hình CM1241 trong TIA Portal',
+  summary: 'Sơ đồ luồng truyền thông, vai trò CM/CB 1241, thứ tự MB_COMM_LOAD và MB_MASTER, cách đọc trạng thái để tìm lỗi.',
+  minutes: 8,
+  body: `
+<p>PLC Siemens S7-1200 có cổng PROFINET/Ethernet tích hợp; để nói chuyện Modbus RTU qua RS485, cấu hình thông dụng là lắp module truyền thông RS485 tương thích như <strong>CM 1241 RS422/485</strong> hoặc <strong>CB 1241 RS485</strong>. Kiểm tra mã phần cứng, phiên bản CPU và TIA Portal trước khi chọn module trong project.</p>
+
+<figure class="my-8 overflow-x-auto rounded-xl border border-line bg-white p-3 sm:p-5">
+  <svg class="h-auto min-w-[700px] w-full sm:min-w-0" viewBox="0 0 840 300" role="img" aria-labelledby="s7-modbus-title s7-modbus-desc">
+    <title id="s7-modbus-title">Sơ đồ truyền thông Modbus RTU từ S7-1200 tới biến tần</title>
+    <desc id="s7-modbus-desc">PLC Siemens S7-1200 kết nối module CM hoặc CB 1241, sau đó truyền RS485 dạng bus tới biến tần. TIA Portal cấu hình MB_COMM_LOAD và gửi yêu cầu bằng MB_MASTER.</desc>
+    <rect x="1" y="1" width="838" height="298" rx="18" fill="#f5f8fc" stroke="#d7e0ee"/>
+    <text x="34" y="40" fill="#0b2a5b" font-size="17" font-weight="700">Luồng truyền thông Modbus RTU</text>
+    <rect x="34" y="77" width="190" height="116" rx="12" fill="#fff" stroke="#1f5fd6" stroke-width="2"/>
+    <rect x="51" y="94" width="38" height="38" rx="8" fill="#eaf1fd"/>
+    <path d="M61 103h18v20H61zM70 97v6m0 29v-6m-15-13h6m18 0h6" fill="none" stroke="#1f5fd6" stroke-width="2" stroke-linecap="round"/>
+    <text x="102" y="112" fill="#0b2a5b" font-size="16" font-weight="700">S7-1200</text>
+    <text x="51" y="153" fill="#475569" font-size="13">TIA Portal / CPU</text>
+    <text x="51" y="174" fill="#475569" font-size="12">MB_COMM_LOAD → MB_MASTER</text>
+    <path d="M224 135h44" fill="none" stroke="#1f5fd6" stroke-width="3"/>
+    <path d="m260 128 9 7-9 7" fill="none" stroke="#1f5fd6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="274" y="77" width="174" height="116" rx="12" fill="#fff" stroke="#1f5fd6" stroke-width="2"/>
+    <rect x="292" y="94" width="38" height="38" rx="8" fill="#eaf1fd"/>
+    <path d="M302 102h18v22h-18zM306 107h10m-10 5h10m-10 5h6" fill="none" stroke="#1f5fd6" stroke-width="2" stroke-linecap="round"/>
+    <text x="342" y="112" fill="#0b2a5b" font-size="15" font-weight="700">CM / CB 1241</text>
+    <text x="292" y="153" fill="#475569" font-size="13">RS485 physical layer</text>
+    <text x="292" y="174" fill="#475569" font-size="12">Xác nhận đúng mã module</text>
+    <path d="M448 135h80" fill="none" stroke="#1f5fd6" stroke-width="3"/>
+    <path d="m520 128 9 7-9 7" fill="none" stroke="#1f5fd6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="457" y="117" fill="#475569" font-size="12">RS485 / Modbus RTU</text>
+    <rect x="537" y="77" width="264" height="116" rx="12" fill="#fff" stroke="#f5a524" stroke-width="2"/>
+    <rect x="555" y="94" width="38" height="38" rx="8" fill="#fff7e6"/>
+    <path d="M564 103h20v21h-20zM569 108h10m-10 5h10m-10 5h7" fill="none" stroke="#b77908" stroke-width="2" stroke-linecap="round"/>
+    <text x="605" y="112" fill="#0b2a5b" font-size="15" font-weight="700">Biến tần / thiết bị slave</text>
+    <text x="555" y="153" fill="#475569" font-size="13">Địa chỉ trạm + thông số serial</text>
+    <text x="555" y="174" fill="#475569" font-size="12">Thanh ghi theo manual đúng model</text>
+    <rect x="34" y="220" width="767" height="48" rx="10" fill="#fff" stroke="#d7e0ee"/>
+    <text x="53" y="250" fill="#0b2a5b" font-size="14" font-weight="600">Đường bus: A ↔ A, B ↔ B theo nhãn hai thiết bị; nhánh ngắn, không đi hình sao</text>
+  </svg>
+  <figcaption class="mt-3 text-sm text-slate-500">Sơ đồ khối do Automation DQ tự vẽ. Đây là minh họa kết nối, không thay thế sơ đồ chân của mã module thực tế. Trên điện thoại, vuốt ngang để xem toàn bộ hình.</figcaption>
+</figure>
+
+<h2>1. Chọn kiểu kết nối trước khi lập trình</h2>
+<ul>
+  <li><strong>PROFINET / Ethernet:</strong> dùng cổng Ethernet tích hợp khi thiết bị đích hỗ trợ Modbus TCP hoặc giao thức Ethernet phù hợp.</li>
+  <li><strong>Modbus RTU / RS485:</strong> cần cổng serial RS485 tương thích; với cấu hình CM/CB 1241, kiểm tra module, firmware và sơ đồ chân theo tài liệu Siemens.</li>
+  <li><strong>Chỉ có CPU không đồng nghĩa đã có RS485:</strong> đừng đấu cặp A/B vào cổng Ethernet hay vào chân không được nhà sản xuất chỉ định.</li>
+</ul>
+
+<h2>2. Trình tự cấu hình trong TIA Portal</h2>
+<ol>
+  <li>Tạo project với đúng mã CPU, firmware và phiên bản TIA Portal.</li>
+  <li>Thêm CM/CB 1241 đúng mã phần cứng; kiểm tra địa chỉ module và cấu hình truyền thông trong Device configuration.</li>
+  <li>Gọi <code>MB_COMM_LOAD</code> để nạp thông số cổng serial trước khi phát lệnh. Chỉ gửi yêu cầu sau khi khối báo đã khởi tạo thành công.</li>
+  <li>Dùng <code>MB_MASTER</code> tạo yêu cầu đọc/ghi; điều khiển chu kỳ bằng tín hiệu yêu cầu, không phát lệnh ghi liên tục ở mọi vòng quét.</li>
+  <li>Đọc các trạng thái <code>DONE</code>, <code>BUSY</code>, <code>ERROR</code> và mã lỗi của khối; chỉ cập nhật dữ liệu ứng dụng sau khi giao dịch thành công.</li>
+</ol>
+<p>Tên chân, kiểu dữ liệu, cấu trúc instance DB và cách cấu hình cổng có thể khác theo phiên bản CPU/TIA Portal. Hãy dùng trợ giúp tích hợp của đúng phiên bản thay vì chép nguyên một khối mẫu từ project khác.</p>
+
+<h2>3. Đấu RS485 an toàn, ổn định</h2>
+<ul>
+  <li>Dùng cáp xoắn đôi phù hợp RS485; đi tách khỏi dây động lực và dây ngõ ra biến tần.</li>
+  <li>Nối theo nhãn cực tính của cả hai thiết bị. Ký hiệu A/B giữa các hãng có thể khác quy ước; khi không có phản hồi, dừng hệ thống và đối chiếu tài liệu trước khi đổi dây.</li>
+  <li>Nếu tài liệu thiết bị yêu cầu dây tham chiếu/COM, chỉ nối theo sơ đồ hãng. Không dùng shield làm dây tín hiệu.</li>
+  <li>Điện trở kết thúc chỉ đặt ở hai đầu vật lý của bus khi thiết kế yêu cầu; không bật mọi điện trở trên các node trung gian.</li>
+  <li>Không đấu/nối dây khi thiết bị đang cấp điện. Phần biến tần có điện áp nguy hiểm; công việc trong tủ điện chỉ do người đủ chuyên môn thực hiện.</li>
+</ul>
+
+<h2>4. Kiểm tra theo từng lớp</h2>
+<ol>
+  <li>Xác nhận module hiển thị đúng trong Device view, không có lỗi cấu hình phần cứng.</li>
+  <li>So khớp baud rate, parity, số bit dừng và địa chỉ slave giữa PLC với thiết bị.</li>
+  <li>Thử một lệnh đọc an toàn tới thanh ghi trạng thái đã được manual xác nhận trước khi cho phép ghi lệnh chạy.</li>
+  <li>Nếu <code>BUSY</code> kéo dài hoặc timeout, kiểm tra cực tính, địa chỉ trạm, termination, thời gian phản hồi và số lần phát yêu cầu.</li>
+  <li>Ghi log mã lỗi, trạng thái và thời điểm gửi/nhận để phân biệt lỗi cấu hình với lỗi vật lý.</li>
+</ol>
+
+<div class="callout callout-warn">
+  <p><strong>Không dùng truyền thông làm dừng khẩn cấp.</strong> Mạch E-stop, bảo vệ quá tải và chức năng an toàn phải độc lập với Modbus và chương trình tiêu chuẩn. Chạy thử ban đầu không tải, tần số thấp, có người giám sát và phương án cô lập năng lượng phù hợp.</p>
+</div>
+
+<h2>Tài liệu tham khảo</h2>
+<p><a class="font-medium text-brand hover:underline" href="https://support.industry.siemens.com/cs/ww/en/view/109741593" target="_blank" rel="noopener">Siemens S7-1200 Programmable Controller System Manual</a>. Trong TIA Portal, mở phần Instructions/Online help để xem mô tả khối Modbus tương ứng firmware đang dùng.</p>
+`
+},
+
+{
+  slug: 'siemens-s7-1200-kaman-km600-rs485',
+  category: 'bien-tan',
+  title: 'Sơ đồ đấu nối Siemens S7-1200 với biến tần Kaman KM600 qua RS485',
+  summary: 'Sơ đồ bus A/B, checklist cấu hình Modbus RTU và trình tự thử đọc trạng thái trước khi gửi lệnh chạy.',
+  minutes: 7,
+  body: `
+<p>Bài này minh họa một cấu hình thường gặp: <strong>S7-1200 làm Modbus RTU master</strong>, module RS485 CM/CB 1241 làm cổng vật lý và biến tần Kaman KM600 làm slave. Trước khi làm theo, xác nhận KM600 đúng phiên bản có RS485 tích hợp và Siemens module đúng mã phần cứng; không phải mọi CPU đều có sẵn cổng RS485.</p>
+
+<figure class="my-8 overflow-x-auto rounded-xl border border-line bg-white p-3 sm:p-5">
+  <svg class="h-auto min-w-[700px] w-full sm:min-w-0" viewBox="0 0 840 380" role="img" aria-labelledby="kaman-wiring-title kaman-wiring-desc">
+    <title id="kaman-wiring-title">Sơ đồ nguyên lý đấu nối RS485 Siemens S7-1200 và Kaman KM600</title>
+    <desc id="kaman-wiring-desc">CM hoặc CB 1241 nối bus RS485 hai dây tới cổng truyền thông của biến tần KM600. Sơ đồ tách riêng nguồn PLC và nguồn động lực, không vẽ dây động lực để tránh nhầm.</desc>
+    <rect x="1" y="1" width="838" height="378" rx="18" fill="#f5f8fc" stroke="#d7e0ee"/>
+    <text x="30" y="40" fill="#0b2a5b" font-size="17" font-weight="700">Sơ đồ nguyên lý — chỉ thể hiện đường truyền thông</text>
+    <rect x="28" y="75" width="220" height="182" rx="14" fill="#fff" stroke="#1f5fd6" stroke-width="2"/>
+    <rect x="49" y="97" width="72" height="48" rx="7" fill="#0b2a5b"/>
+    <path d="M62 108v26m46-26v26M62 121h17m12 0h17" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M79 113v16m12-16v16" fill="none" stroke="#f5a524" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="132" y="117" fill="#0b2a5b" font-size="16" font-weight="700">S7-1200</text>
+    <text x="49" y="171" fill="#334155" font-size="14" font-weight="600">CPU + CM/CB 1241</text>
+    <text x="49" y="194" fill="#64748b" font-size="12">Cổng serial RS485</text>
+    <rect x="49" y="210" width="73" height="25" rx="5" fill="#eaf1fd"/>
+    <text x="63" y="227" fill="#1f5fd6" font-size="12" font-weight="700">A / D+</text>
+    <rect x="132" y="210" width="73" height="25" rx="5" fill="#eaf1fd"/>
+    <text x="146" y="227" fill="#1f5fd6" font-size="12" font-weight="700">B / D−</text>
+    <path d="M122 222H335" fill="none" stroke="#1f5fd6" stroke-width="4"/>
+    <path d="M122 243H335" fill="none" stroke="#f5a524" stroke-width="4"/>
+    <text x="200" y="211" fill="#1f5fd6" font-size="12" font-weight="700">A(+) theo nhãn/manual</text>
+    <text x="200" y="262" fill="#9a6700" font-size="12" font-weight="700">B(−) theo nhãn/manual</text>
+    <rect x="347" y="209" width="24" height="48" rx="4" fill="#fff" stroke="#64748b" stroke-width="2"/>
+    <path d="M353 218h12m-12 9h12m-12 9h12" stroke="#64748b" stroke-width="2"/>
+    <text x="325" y="285" fill="#64748b" font-size="11">Cáp xoắn đôi</text>
+    <path d="M371 222H584" fill="none" stroke="#1f5fd6" stroke-width="4"/>
+    <path d="M371 243H584" fill="none" stroke="#f5a524" stroke-width="4"/>
+    <rect x="594" y="75" width="218" height="182" rx="14" fill="#fff" stroke="#f5a524" stroke-width="2"/>
+    <rect x="615" y="97" width="65" height="50" rx="7" fill="#fff7e6"/>
+    <path d="M632 107h31v29h-31zM638 113h18m-18 7h18m-18 7h12" fill="none" stroke="#b77908" stroke-width="2" stroke-linecap="round"/>
+    <text x="692" y="117" fill="#0b2a5b" font-size="15" font-weight="700">Kaman KM600</text>
+    <text x="615" y="171" fill="#334155" font-size="14" font-weight="600">Cổng RS485*</text>
+    <text x="615" y="194" fill="#64748b" font-size="12">Slave ID + thông số serial</text>
+    <rect x="615" y="210" width="73" height="25" rx="5" fill="#fff7e6"/>
+    <text x="629" y="227" fill="#9a6700" font-size="12" font-weight="700">A / D+</text>
+    <rect x="698" y="210" width="73" height="25" rx="5" fill="#fff7e6"/>
+    <text x="712" y="227" fill="#9a6700" font-size="12" font-weight="700">B / D−</text>
+    <path d="M40 315h760" stroke="#d7e0ee" stroke-width="1"/>
+    <rect x="42" y="329" width="18" height="18" rx="4" fill="#eaf1fd"/>
+    <path d="M46 338h10" stroke="#1f5fd6" stroke-width="3"/>
+    <text x="68" y="343" fill="#475569" font-size="12">Bus truyền thông RS485 — không phải dây nguồn hay dây motor</text>
+    <rect x="457" y="329" width="18" height="18" rx="4" fill="#fff7e6"/>
+    <path d="M461 338h10" stroke="#f5a524" stroke-width="3"/>
+    <text x="483" y="343" fill="#475569" font-size="12">Đường B trong sơ đồ, đối chiếu ký hiệu thực tế</text>
+    <text x="30" y="367" fill="#64748b" font-size="11">* Tên/vị trí chân và điện trở kết thúc phụ thuộc đúng mã thiết bị; xem manual/nhãn cọc trước khi đấu.</text>
+  </svg>
+  <figcaption class="mt-3 text-sm text-slate-500">Sơ đồ nguyên lý do Automation DQ tự vẽ, không theo tỉ lệ và không thay thế sơ đồ chân của hãng. Không hiển thị phần đấu nguồn AC/DC hoặc U/V/W của động cơ. Trên điện thoại, vuốt ngang để xem toàn bộ hình.</figcaption>
+</figure>
+
+<h2>1. Phần cứng cần có</h2>
+<ul>
+  <li>PLC Siemens S7-1200 với CM/CB 1241 RS485 được hỗ trợ bởi CPU/firmware dự án.</li>
+  <li>Biến tần đúng model Kaman KM600, có cổng truyền thông RS485 theo tài liệu của phiên bản đó.</li>
+  <li>Cáp xoắn đôi RS485; có thể cần điện trở cuối và dây tham chiếu theo chiều dài, topology, và hướng dẫn của hai hãng.</li>
+</ul>
+<p>Trên sơ đồ, A/B chỉ là cách gọi phổ biến để minh họa. Một số tài liệu gọi D+/D− hoặc có cách đặt A/B ngược nhau. Hãy ghép theo quy ước trong manual của cả module Siemens và biến tần, không dựa riêng vào màu dây.</p>
+
+<h2>2. Cấu hình hai đầu truyền thông</h2>
+<p>Trên S7-1200, cấu hình module đúng trong TIA Portal, nạp thông số cổng phù hợp rồi dùng <code>MB_COMM_LOAD</code> và <code>MB_MASTER</code>. Trên KM600, đặt địa chỉ slave khác 0, tốc độ truyền, parity và stop bit giống hệt PLC.</p>
+<p>Một số tài liệu KM600 ghi nhóm tham số truyền thông <code>F18</code>, nguồn lệnh <code>F02.00</code>, nguồn tần số <code>F01.00</code>; tên/giá trị có thể thay đổi theo phiên bản. Xem bài <a class="font-medium text-brand hover:underline" href="#bien-tan-kaman-km600-modbus-rs485">bảng tham số và thanh ghi KM600</a> để tham khảo, sau đó xác nhận bằng manual đi kèm đúng biến tần.</p>
+
+<h2>3. Trình tự chạy thử giảm rủi ro</h2>
+<ol>
+  <li>Ngắt nguồn, kiểm tra model/module và đấu dây theo tài liệu thiết bị; kiểm tra cách điện trước khi cấp nguồn.</li>
+  <li>Ban đầu chỉ đọc thanh ghi trạng thái/giá trị giám sát đã xác nhận trong manual. Kiểm tra dữ liệu hợp lý và mã lỗi truyền thông.</li>
+  <li>Chỉ sau khi đọc ổn định mới thử lệnh ghi, với tần số thấp, động cơ tách tải hoặc điều kiện thử nghiệm đã được đánh giá an toàn.</li>
+  <li>Kiểm tra phản hồi thực tế từ biến tần; không coi việc PLC gửi lệnh thành công là xác nhận motor đã dừng/chạy an toàn.</li>
+  <li>Thử tình huống mất cáp/PLC mất nguồn và xác nhận phản ứng fail-safe của hệ thống.</li>
+</ol>
+
+<h2>4. Nếu PLC không nhận phản hồi</h2>
+<ul>
+  <li>So baud rate, parity, stop bit, slave ID và timeout hai đầu.</li>
+  <li>Kiểm tra module có được cấu hình đúng, <code>MB_COMM_LOAD</code> hoàn tất chưa, <code>MB_MASTER</code> có trả <code>ERROR</code> hay timeout không.</li>
+  <li>Đối chiếu địa chỉ thanh ghi và cách đánh số 0/1-based giữa manual Kaman với lệnh TIA Portal.</li>
+  <li>Kiểm tra topology bus, nhánh dây, shield/ground và termination theo tài liệu; không bật điện trở cuối trên mọi node.</li>
+  <li>Nếu cần đổi A/B để kiểm tra, dừng và cô lập nguồn theo quy trình trước khi thao tác.</li>
+</ul>
+
+<div class="callout callout-warn">
+  <p><strong>An toàn máy:</strong> dừng khẩn cấp, contactor an toàn và bảo vệ quá tải không được phụ thuộc duy nhất vào lệnh Modbus. Không thao tác cọc nguồn/động cơ của biến tần khi còn điện; chờ xả tụ theo hướng dẫn của hãng và xác nhận hết điện bằng thiết bị phù hợp.</p>
+</div>
+
+<p class="text-sm text-slate-500">Tài liệu tham khảo: <a class="font-medium text-brand hover:underline" href="https://support.industry.siemens.com/cs/ww/en/view/109741593" target="_blank" rel="noopener">manual hệ thống S7-1200 của Siemens</a> và manual KM600 đúng mã/phiên bản do nhà cung cấp thiết bị phát hành.</p>
+`
+},
+
+{
   slug: 'bien-tan-kaman-km600-modbus-rs485',
   category: 'bien-tan',
   title: 'Biến tần Kaman KM600 qua RS485 Modbus RTU: cài tham số, thanh ghi và khung truyền có sẵn CRC',

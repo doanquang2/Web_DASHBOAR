@@ -71,10 +71,10 @@
         '<li>' +
           '<a href="#' + a.slug + '" class="group grid gap-1 py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">' +
             '<div>' +
-              '<h2 class="text-lg font-semibold text-navy-900 group-hover:text-brand">' + escapeHTML(a.title) + '</h2>' +
+              '<h2 class="flex items-start gap-2 text-lg font-semibold text-navy-900 group-hover:text-brand">' + window.ADQIcon('file', 'mt-0.5 h-5 w-5 shrink-0 text-brand') + '<span>' + escapeHTML(a.title) + '</span></h2>' +
               '<p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">' + escapeHTML(a.summary) + '</p>' +
             '</div>' +
-            '<p class="text-sm text-slate-500">' + escapeHTML(catLabel(a.category)) + ', ' + a.minutes + ' phút đọc</p>' +
+            '<p class="inline-flex items-center gap-1.5 text-sm text-slate-500">' + window.ADQIcon('clock', 'h-4 w-4') + escapeHTML(catLabel(a.category)) + ', ' + a.minutes + ' phút đọc</p>' +
           '</a>' +
         '</li>'
       );
@@ -100,27 +100,27 @@
         '<a href="#danh-sach" class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:text-brand-dark hover:underline">' +
           '<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12.7 4.3a1 1 0 010 1.4L8.4 10l4.3 4.3a1 1 0 11-1.4 1.4l-5-5a1 1 0 010-1.4l5-5a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>' +
           'Tất cả bài viết</a>' +
-        '<p class="mt-8 text-sm font-medium text-brand">' + escapeHTML(catLabel(a.category)) + ', ' + a.minutes + ' phút đọc</p>' +
+        '<p class="mt-8 flex items-center gap-2 text-sm font-medium text-brand">' + window.ADQIcon('book', 'h-4 w-4') + escapeHTML(catLabel(a.category)) + '<span aria-hidden="true">·</span>' + window.ADQIcon('clock', 'h-4 w-4') + a.minutes + ' phút đọc</p>' +
         '<h1 id="reader-title" tabindex="-1" class="mt-2 max-w-3xl text-3xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-4xl">' + escapeHTML(a.title) + '</h1>' +
         '<p class="mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">' + escapeHTML(a.summary) + '</p>' +
         '<div class="article-body mt-8 border-t border-line pt-2">' + a.body + '</div>' +
 
         '<div class="mt-14 max-w-2xl rounded-lg border border-line bg-paper p-6">' +
-          '<h2 class="text-lg font-semibold text-navy-900">Muốn có sẵn chương trình chạy được?</h2>' +
+          '<h2 class="flex items-center gap-2 text-lg font-semibold text-navy-900">' + window.ADQIcon('code', 'h-5 w-5 text-brand') + 'Muốn có sẵn chương trình chạy được?</h2>' +
           '<p class="mt-2 text-sm leading-relaxed text-slate-600">Các gói source code đều kèm sơ đồ đấu dây và hướng dẫn cài đặt. Cần chỉnh theo máy của bạn thì nhắn Zalo để được hỗ trợ.</p>' +
           '<div class="mt-4 flex flex-col gap-3 sm:flex-row">' +
-            '<a href="source-code.html" class="inline-flex items-center justify-center rounded-md bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-800">Xem source code</a>' +
-            '<a href="https://zalo.me/0971048764" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-md border border-navy-900/30 px-5 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900">Nhắn Zalo</a>' +
+            '<a href="source-code.html" class="inline-flex items-center justify-center gap-2 rounded-md bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-800">' + window.ADQIcon('code', 'h-4 w-4') + 'Xem source code</a>' +
+            '<a href="https://zalo.me/0971048764" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-md border border-navy-900/30 px-5 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:border-navy-900">' + window.ADQIcon('message', 'h-4 w-4') + 'Nhắn Zalo</a>' +
           '</div>' +
         '</div>' +
 
         (related.length
-          ? '<div class="mt-14"><h2 class="text-xl font-bold text-navy-900">Đọc tiếp</h2>' +
+          ? '<div class="mt-14"><h2 class="flex items-center gap-2 text-xl font-bold text-navy-900">' + window.ADQIcon('book', 'h-5 w-5 text-brand') + 'Đọc tiếp</h2>' +
             '<ul class="mt-4 max-w-3xl divide-y divide-line border-y border-line">' +
             related.map(function (b) {
               return (
                 '<li><a href="#' + b.slug + '" class="group block py-5">' +
-                  '<p class="text-sm text-slate-500">' + escapeHTML(catLabel(b.category)) + ', ' + b.minutes + ' phút đọc</p>' +
+                  '<p class="inline-flex items-center gap-1.5 text-sm text-slate-500">' + window.ADQIcon('clock', 'h-4 w-4') + escapeHTML(catLabel(b.category)) + ', ' + b.minutes + ' phút đọc</p>' +
                   '<p class="mt-1 text-base font-semibold text-navy-900 group-hover:text-brand">' + escapeHTML(b.title) + '</p>' +
                 '</a></li>'
               );

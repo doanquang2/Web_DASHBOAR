@@ -18,6 +18,15 @@ body {
   border-radius: 4px;
 }
 
+/* Match the circular navy-and-white icon badges in the DQ Automation artwork. */
+svg.text-brand {
+  padding: 3px;
+  border-radius: 9999px;
+  background-color: #0b2a5b;
+  color: #fff;
+  stroke-width: 2.2;
+}
+
 /* Liên kết "Bỏ qua điều hướng" cho người dùng bàn phím / trình đọc màn hình */
 .skip-link {
   position: absolute;
