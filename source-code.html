@@ -38,7 +38,7 @@
         <ul id="products" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></ul>
 
         <div class="mt-14 rounded-lg border border-line bg-paper p-6 sm:p-8">
-          <h2 class="text-xl font-bold text-navy-900">Cách mua</h2>
+          <h2 class="flex items-center gap-2 text-xl font-bold text-navy-900"><svg class="h-5 w-5 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>Cách mua</h2>
           <ol class="mt-4 list-decimal space-y-2 pl-5 text-slate-700">
             <li>Chọn dự án bên trên và nhắn Zalo kèm <strong>tên dự án</strong>.</li>
             <li>Chuyển khoản theo mã QR được gửi lại.</li>
@@ -54,7 +54,7 @@
         <div class="mt-10 text-center">
           <p class="text-slate-600">Cần bản chỉnh theo loại PLC hoặc biến tần của bạn?</p>
           <a href="https://zalo.me/0971048764" target="_blank" rel="noopener"
-             class="mt-4 inline-flex items-center rounded-md bg-navy-900 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-navy-800">Nhắn Zalo 0971 048 764</a>
+           class="mt-4 inline-flex items-center gap-2 rounded-md bg-navy-900 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-navy-800"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>Nhắn Zalo 0971 048 764</a>
         </div>
       </div>
     </section>
@@ -79,17 +79,26 @@
       var ZALO = 'https://zalo.me/0971048764';
       function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
       function vnd(n) { return n.toLocaleString('vi-VN') + 'đ'; }
+      function categoryIcon(cat) {
+        var symbol = cat.indexOf('ESP32') !== -1
+          ? '<path d="M5 12.5a11 11 0 0 1 14 0M8.5 16a5.5 5.5 0 0 1 7 0M12 20h.01"/><path d="M2 9a16 16 0 0 1 20 0"/>'
+          : cat.indexOf('Điện tử') !== -1
+            ? '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 7V3m0 18v-4M7 12H3m18 0h-4"/>'
+            : '<path d="m13 2-3 8h7l-6 12 1-9H5l8-11z"/>';
+        return '<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy-900 text-white">' +
+          '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + symbol + '</svg></span>';
+      }
       var ul = document.getElementById('products');
       ul.innerHTML = PRODUCTS.map(function (p) {
         return '<li class="flex flex-col rounded-lg border border-line bg-white">' +
-          '<div class="border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">' + esc(p.cat) + '</div>' +
+          '<div class="flex items-center gap-2 border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">' + categoryIcon(p.cat) + esc(p.cat) + '</div>' +
           '<div class="flex flex-1 flex-col p-5">' +
             '<h2 class="text-lg font-semibold text-navy-900">' + esc(p.title) + '</h2>' +
             '<p class="mt-2 text-sm leading-relaxed text-slate-600">' + esc(p.desc) + '</p>' +
-            '<ul class="mt-4 space-y-1.5 text-sm text-slate-700">' + p.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
+            '<ul class="mt-4 space-y-1.5 text-sm text-slate-700">' + p.items.map(function (i) { return '<li class="flex items-start gap-2"><svg class="mt-0.5 h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>' + esc(i) + '</li>'; }).join('') + '</ul>' +
             '<div class="mt-auto flex items-center justify-between gap-3 pt-6">' +
               '<p class="text-lg font-bold text-navy-900">' + vnd(p.price) + '</p>' +
-              '<a href="' + ZALO + '" target="_blank" rel="noopener" class="rounded-md bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-800">Hỏi mua qua Zalo</a>' +
+              '<a href="' + ZALO + '" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-800"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>Hỏi mua qua Zalo</a>' +
             '</div>' +
           '</div></li>';
       }).join('');
