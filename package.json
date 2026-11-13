@@ -4,9 +4,8 @@
   "private": true,
   "description": "Website Automation DQ: kiến thức tự động hóa và bán source code",
   "scripts": {
-    "build:articles": "node tools/build-articles.js",
     "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/css/tailwind.css --minify",
-    "build": "npm run build:articles && npm run build:css",
+    "build": "npm run build:css",
     "watch:css": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/css/tailwind.css --watch"
   },
   "devDependencies": {

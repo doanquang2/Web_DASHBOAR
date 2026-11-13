@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tài liệu tự động hóa miễn phí: PLC, HMI, biến tần | Automation DQ</title>
+  <meta name="description" content="Tài liệu và bài viết miễn phí về PLC, HMI, biến tần, ESP32, cảm biến và điện công nghiệp.">
+  <meta name="theme-color" content="#0B2A5B">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script src="assets/js/components.js" defer></script>
+  <script src="assets/js/kien-thuc-data.js" defer></script>
+</head>
+
+<body class="font-sans text-ink antialiased">
+
+  <div id="site-header" data-active="tai-lieu"></div>
+
+  <main id="noi-dung">
+
+    <section class="border-b border-line bg-paper">
+      <div class="mx-auto max-w-page px-4 py-12 sm:px-6 lg:py-16">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Tài liệu miễn phí</p>
+        <h1 class="mt-2 max-w-3xl text-3xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-4xl">Tài liệu tự động hóa, đọc và tải miễn phí</h1>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">Tổng hợp bài viết và tài liệu tham khảo, không cần đăng ký.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="mx-auto max-w-page px-4 py-12 sm:px-6 lg:py-16">
+        <h2 class="text-2xl font-bold tracking-tight text-navy-900">Tài liệu tải về</h2>
+        <ul id="docs" class="mt-6 divide-y divide-line border-y border-line"></ul>
+        <p id="docs-empty" hidden class="mt-6 rounded-md border border-line bg-paper px-5 py-6 text-slate-600">
+          Tài liệu tải về đang được cập nhật. Trong lúc chờ, bạn có thể đọc các bài viết ngay bên dưới.
+        </p>
+
+        <h2 class="mt-14 text-2xl font-bold tracking-tight text-navy-900">Bài viết đọc trực tiếp</h2>
+        <ul id="articles" class="mt-6 divide-y divide-line border-y border-line"></ul>
+        <p class="mt-6 text-sm"><a class="font-semibold text-brand hover:underline" href="kien-thuc.html">Xem tất cả bài viết kiến thức</a></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script>
+    /* Tài liệu tải về: đặt file vào assets/docs/ rồi thêm một dòng vào DOCS.
+       { title: 'Tên tài liệu', note: 'Mô tả ngắn', file: 'assets/docs/ten-file.pdf', size: '1,2 MB' }
+       Chỉ đăng tài liệu do bạn tự làm hoặc được phép phân phối lại (không đăng lại catalog của hãng). */
+    document.addEventListener('DOMContentLoaded', function () {
+      var DOCS = [];
+      var CATS = { 'plc': 'PLC', 'hmi': 'HMI', 'bien-tan': 'Biến tần', 'esp32-iot': 'ESP32 và IoT', 'cam-bien': 'Cảm biến', 'dien-cong-nghiep': 'Điện công nghiệp' };
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+      var docs = document.getElementById('docs');
+      if (!DOCS.length) {
+        docs.hidden = true;
+        document.getElementById('docs-empty').hidden = false;
+      } else {
+        docs.innerHTML = DOCS.map(function (d) {
+          return '<li><a href="' + esc(d.file) + '" download class="group grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">' +
+            '<div><h3 class="text-lg font-semibold text-navy-900 group-hover:text-brand">' + esc(d.title) + '</h3>' +
+            '<p class="mt-1 text-sm text-slate-600">' + esc(d.note || '') + '</p></div>' +
+            '<p class="text-sm text-slate-500">Tải về' + (d.size ? ', ' + esc(d.size) : '') + '</p></a></li>';
+        }).join('');
+      }
+
+      var arts = window.ARTICLES || [];
+      document.getElementById('articles').innerHTML = arts.map(function (a) {
+        return '<li><a href="kien-thuc.html#' + encodeURIComponent(a.slug) + '" class="group grid gap-1 py-5 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-8">' +
+          '<div><h3 class="text-lg font-semibold text-navy-900 group-hover:text-brand">' + esc(a.title) + '</h3>' +
+          '<p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">' + esc(a.summary) + '</p></div>' +
+          '<p class="text-sm text-slate-500">' + esc(CATS[a.category] || a.category) + ', ' + esc(a.minutes) + ' phút đọc</p></a></li>';
+      }).join('');
+    });
+  </script>
+
+</body>
+</html>

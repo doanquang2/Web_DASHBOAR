@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Source code PLC, ESP32, điện tử có sơ đồ đấu dây | Automation DQ</title>
+  <meta name="description" content="Source code PLC, ESP32 và mạch điện tử kèm sơ đồ đấu dây, hướng dẫn cài đặt. Mua qua Zalo, nhận link tải và được hỗ trợ khi chạy thử.">
+  <meta name="theme-color" content="#0B2A5B">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script src="assets/js/components.js" defer></script>
+</head>
+
+<body class="font-sans text-ink antialiased">
+
+  <div id="site-header" data-active="source-code"></div>
+
+  <main id="noi-dung">
+
+    <section class="border-b border-line bg-paper">
+      <div class="mx-auto max-w-page px-4 py-12 sm:px-6 lg:py-16">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Source code</p>
+        <h1 class="mt-2 max-w-3xl text-3xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-4xl">Source code kèm sơ đồ đấu dây, chạy được ngay</h1>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">Mỗi gói gồm chương trình hoàn chỉnh, sơ đồ đấu dây và hướng dẫn cài đặt. Chọn dự án, nhắn Zalo, thanh toán và nhận link tải.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="mx-auto max-w-page px-4 py-12 sm:px-6 lg:py-16">
+        <ul id="products" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></ul>
+
+        <div class="mt-14 rounded-lg border border-line bg-paper p-6 sm:p-8">
+          <h2 class="text-xl font-bold text-navy-900">Cách mua</h2>
+          <ol class="mt-4 list-decimal space-y-2 pl-5 text-slate-700">
+            <li>Chọn dự án bên trên và nhắn Zalo kèm <strong>tên dự án</strong>.</li>
+            <li>Chuyển khoản theo mã QR được gửi lại.</li>
+            <li>Nhận link tải source code, sơ đồ đấu dây và hướng dẫn.</li>
+            <li>Gặp lỗi khi chạy thử thì nhắn lại để được hỗ trợ.</li>
+          </ol>
+          <p class="mt-5 text-sm text-slate-600">
+            Xem thêm <a class="font-medium text-brand hover:underline" href="chinh-sach.html">chính sách hỗ trợ</a> và
+            <a class="font-medium text-brand hover:underline" href="dieu-khoan.html">điều khoản sử dụng source code</a>.
+          </p>
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-slate-600">Cần bản chỉnh theo loại PLC hoặc biến tần của bạn?</p>
+          <a href="https://zalo.me/0971048764" target="_blank" rel="noopener"
+             class="mt-4 inline-flex items-center rounded-md bg-navy-900 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-navy-800">Nhắn Zalo 0971 048 764</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script>
+    /* Danh sách sản phẩm: sửa trực tiếp mảng PRODUCTS bên dưới. Nội dung và giá hiện là dữ liệu mẫu, khớp với trang chủ. */
+    (function () {
+      var PRODUCTS = [
+        { cat: 'PLC và cảm biến', title: 'Điều khiển động cơ theo nhiệt độ PT100',
+          desc: 'Tự dừng động cơ khi nhiệt độ chạm 25°C và chạy lại khi xuống 20°C. Hai ngưỡng này chỉnh được.',
+          items: ['Chương trình PLC hoàn chỉnh', 'Sơ đồ đấu dây cảm biến PT100', 'Video demo chạy thật'], price: 199000 },
+        { cat: 'ESP32 và IoT', title: 'Tưới tự động ESP32 kèm dashboard MQTT',
+          desc: 'Mở, tắt van tưới từ xa trên điện thoại. Có chế độ tự động và chế độ bằng tay.',
+          items: ['Firmware ESP32 và giao diện dashboard', 'Sơ đồ nối relay, van, nguồn', 'Hướng dẫn cấu hình MQTT'], price: 299000 },
+        { cat: 'Điện tử số', title: 'Mạch đếm chiều dài không cần vi điều khiển',
+          desc: 'Đếm bằng IC 74LS192, giải mã 74LS47 và hiển thị trên LED 7 đoạn anode chung.',
+          items: ['File mô phỏng Proteus', 'Sơ đồ nguyên lý', 'Giải thích nguyên lý hoạt động'], price: 149000 }
+      ];
+      var ZALO = 'https://zalo.me/0971048764';
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function vnd(n) { return n.toLocaleString('vi-VN') + 'đ'; }
+      var ul = document.getElementById('products');
+      ul.innerHTML = PRODUCTS.map(function (p) {
+        return '<li class="flex flex-col rounded-lg border border-line bg-white">' +
+          '<div class="border-b border-line bg-brand-soft px-5 py-3 text-sm font-semibold text-navy-800">' + esc(p.cat) + '</div>' +
+          '<div class="flex flex-1 flex-col p-5">' +
+            '<h2 class="text-lg font-semibold text-navy-900">' + esc(p.title) + '</h2>' +
+            '<p class="mt-2 text-sm leading-relaxed text-slate-600">' + esc(p.desc) + '</p>' +
+            '<ul class="mt-4 space-y-1.5 text-sm text-slate-700">' + p.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
+            '<div class="mt-auto flex items-center justify-between gap-3 pt-6">' +
+              '<p class="text-lg font-bold text-navy-900">' + vnd(p.price) + '</p>' +
+              '<a href="' + ZALO + '" target="_blank" rel="noopener" class="rounded-md bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-800">Hỏi mua qua Zalo</a>' +
+            '</div>' +
+          '</div></li>';
+      }).join('');
+    })();
+  </script>
+
+</body>
+</html>
